@@ -20,7 +20,11 @@ export interface ProxyEnv {
   geminiAllowFallback: boolean;
   geminiFallbackModel: string | undefined;
 
-  // keep for later milestones
+  // M3: Streaming correctness + reconciliation
+  streamIncludeUsage: boolean; // if stream==true, request usage in final chunk (OpenAI needs this) :contentReference[oaicite:2]{index=2}
+  auditEnabled: boolean;
+
+  // keep for later milestones (signing)
   auditDir: string;
   signerKeyId: string;
   signerSecretHex: string;
@@ -77,6 +81,10 @@ export function loadEnv(processEnv = process.env): ProxyEnv {
 
     geminiAllowFallback: envBool(processEnv.AEGIS_GEMINI_ALLOW_FALLBACK, true),
     geminiFallbackModel,
+
+    // M3 toggles
+    streamIncludeUsage: envBool(processEnv.AEGIS_STREAM_INCLUDE_USAGE, true),
+    auditEnabled: envBool(processEnv.AEGIS_AUDIT_ENABLED, true),
 
     auditDir: String(processEnv.AEGIS_AUDIT_DIR ?? ".aegis/receipts"),
     signerKeyId: String(processEnv.AEGIS_SIGNER_KEY_ID ?? "local-k1"),
