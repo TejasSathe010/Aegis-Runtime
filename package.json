@@ -1,0 +1,19 @@
+{
+  "name": "aegis-runtime",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev:proxy": "pnpm --filter @aegis/proxy dev",
+    "lint": "echo \"(optional) add eslint later\""
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3"
+  }
+}
