@@ -25,7 +25,7 @@ export interface RoutingPolicy {
 }
 
 export interface ModelPolicy {
-  allowModels: string[]; // allowlist
+  allowModels: string[];
 }
 
 export interface TenantPolicy {
@@ -34,9 +34,7 @@ export interface TenantPolicy {
   environment?: EnvironmentId;
 
   budgets: {
-    // per “agent run” (session) cap
     perRunUsd: number;
-    // per time window cap (coarse global control)
     perWindow: BudgetPolicy;
   };
 

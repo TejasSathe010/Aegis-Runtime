@@ -1,20 +1,56 @@
 {
   "name": "@aegis/proxy",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Production-ready HTTP proxy server for AI/LLM governance with OpenAI-compatible API",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "aegis-proxy": "./dist/index.js"
+  },
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "ai",
+    "llm",
+    "proxy",
+    "server",
+    "governance",
+    "openai",
+    "aegis"
+  ],
+  "author": "Aegis Runtime Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aegis-runtime/aegis-runtime.git",
+    "directory": "packages/proxy"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
+    "@aegis/core": "workspace:*",
+    "@aegis/adapters-openai": "workspace:*"
+  },
+  "peerDependencies": {
     "@aegis/core": "workspace:*",
     "@aegis/adapters-openai": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "predev": "pnpm -r --filter @aegis/proxy... build",
-    "dev": "node dist/index.js"
+    "dev": "node dist/index.js",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
     "typescript": "^5.6.3"

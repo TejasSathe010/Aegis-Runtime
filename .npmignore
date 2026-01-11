@@ -1,0 +1,44 @@
+# Development files
+.github/
+.vscode/
+.idea/
+*.iml
+
+# Source files
+src/
+packages/*/src/
+examples/
+
+# Config files
+tsconfig*.json
+.prettierrc*
+.eslintrc*
+.editorconfig
+.nvmrc
+.gitattributes
+
+# Build artifacts (already in .gitignore)
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Test files
+*.test.ts
+*.test.js
+test/
+**/test/
+
+# Documentation
+CONTRIBUTING.md
+notes.txt
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Lock files (keep pnpm-lock.yaml for reproducible installs)
+# But ignore npm/yarn locks
+package-lock.json
+yarn.lock

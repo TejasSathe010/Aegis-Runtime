@@ -15,7 +15,7 @@ export interface OpenAIChatCompletionsRequest {
 
 export interface OpenAIEnv {
   apiKey: string;
-  baseUrl?: string; // default: https://api.openai.com
+  baseUrl?: string;
 }
 
 function jsonHeaders(apiKey: string): Record<string, string> {
@@ -43,7 +43,6 @@ export async function openaiChatCompletionsViaGate(args: {
   const inputUpper = roughTokenEstimateFromText(inputText);
   const outputUpper = maxOut;
 
-  // Ensure include_usage for streaming so we can commit actual later.
   const body: OpenAIChatCompletionsRequest = stream
     ? { ...args.body, stream_options: { ...(args.body.stream_options ?? {}), include_usage: true } }
     : args.body;
@@ -80,7 +79,6 @@ export async function openaiChatCompletionsViaGate(args: {
             usage = { inputTokens: obj.usage.prompt_tokens, outputTokens: obj.usage.completion_tokens };
           }
         } catch {
-          // ignore parsing
         }
 
         return {
@@ -91,12 +89,6 @@ export async function openaiChatCompletionsViaGate(args: {
         };
       }
 
-      // STREAMING:
-      // We tee the stream:
-      //  - one branch goes to client
-      //  - the other branch gets parsed for final usage and then gate commits.
-      // Gate.call() commit happens immediately after execute returns, so for streaming we return no usage here.
-      // We attach a "usage tap" promise to the Response via a symbol, handled by the proxy.
       return {
         ok: upstream.ok,
         status: upstream.status,
@@ -105,13 +97,9 @@ export async function openaiChatCompletionsViaGate(args: {
     }
   });
 
-  // In this adapter we return a minimal Response only for examples; proxy uses its own implementation.
-  // For direct SDK usage, prefer the proxy package or wire upstream response yourself.
   return new Response(JSON.stringify(res), { status: 200, headers: { "content-type": "application/json" } });
 }
 
-// Proxy helper: forward upstream response while tapping usage.
-// This does NOT use Gate directly; it expects the proxy route to call Gate with an execute() that returns usage post-stream.
 export async function forwardOpenAIChatCompletions(args: {
   env: OpenAIEnv;
   body: OpenAIChatCompletionsRequest;

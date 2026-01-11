@@ -1,31 +1,68 @@
 export type Provider = "openai" | "gemini";
 
+export type Pricing = {
+  inputUsdPer1kTokens: number;
+  outputUsdPer1kTokens: number;
+};
+
+export type PricingTable = Record<string, Record<string, Pricing>>;
+
+export type TenantPolicy = {
+  hardStop: boolean;
+
+  tokens: {
+    perRun: number;
+    perMinute: number;
+    perDay: number;
+  };
+
+  usd?: {
+    perRun?: number;
+    perMinute?: number;
+    perDay?: number;
+  };
+
+  allowProviders?: Provider[];
+  allowModels?: string[];
+};
+
+export type Policies = {
+  default: TenantPolicy;
+  tenants: Record<string, TenantPolicy>;
+};
+
 export interface ProxyEnv {
   port: number;
 
   defaultProvider: Provider;
   requireTenantHeader: boolean;
+  streamIncludeUsage: boolean;
 
   openai: {
-    apiKey?: string; // omit when missing
+    apiKey?: string;
     baseUrl: string;
   };
 
   gemini: {
-    apiKey?: string; // omit when missing
-    baseUrl: string; // https://generativelanguage.googleapis.com/v1beta/openai
+    apiKey?: string;
+    baseUrl: string;
   };
 
-  // Fallback behavior (Gemini-only)
   geminiAllowFallback: boolean;
-  geminiFallbackModel: string | undefined;
+  geminiFallbackModel: string;
 
-  // M3: Streaming correctness + reconciliation
-  streamIncludeUsage: boolean; // if stream==true, request usage in final chunk (OpenAI needs this) :contentReference[oaicite:2]{index=2}
-  auditEnabled: boolean;
+  governanceEnabled: boolean;
+  policies: Policies;
 
-  // keep for later milestones (signing)
+  defaultMaxTokens: number;
+  maxTokensCap: number;
+
+  pricing: PricingTable;
+
+  receiptsDir: string;
+
   auditDir: string;
+
   signerKeyId: string;
   signerSecretHex: string;
 }
@@ -53,19 +90,51 @@ function envBool(v: unknown, def: boolean) {
   return def;
 }
 
+function parseJson<T>(name: string, v: string | undefined): T | undefined {
+  if (!v) return undefined;
+  try {
+    return JSON.parse(v) as T;
+  } catch {
+    throw new Error(`Invalid JSON in ${name}`);
+  }
+}
+
+const DEFAULT_POLICY: TenantPolicy = {
+  hardStop: true,
+  tokens: { perRun: 5000, perMinute: 50_000, perDay: 500_000 }
+};
+
 export function loadEnv(processEnv = process.env): ProxyEnv {
   const defaultProvider = (processEnv.AEGIS_DEFAULT_PROVIDER ?? "gemini") as Provider;
 
   const openaiApiKey = optionalString(processEnv.OPENAI_API_KEY);
   const geminiApiKey = optionalString(processEnv.GEMINI_API_KEY);
 
-  const geminiFallbackModel =
-    optionalString(processEnv.AEGIS_GEMINI_FALLBACK_MODEL) ?? "gemini-2.5-flash";
+  const defaultPolicyOverride = parseJson<TenantPolicy>(
+    "AEGIS_DEFAULT_POLICY_JSON",
+    processEnv.AEGIS_DEFAULT_POLICY_JSON
+  );
+
+  const tenantPolicies =
+    parseJson<Record<string, TenantPolicy>>("AEGIS_TENANT_POLICIES_JSON", processEnv.AEGIS_TENANT_POLICIES_JSON) ??
+    {};
+
+  const pricing =
+    parseJson<PricingTable>("AEGIS_PRICING_JSON", processEnv.AEGIS_PRICING_JSON) ?? ({} as PricingTable);
+
+  const receiptsDir =
+    processEnv.AEGIS_RECEIPTS_DIR ??
+    processEnv.AEGIS_AUDIT_DIR ?? // backward compat
+    ".aegis/receipts";
+
+  const geminiFallbackModel = optionalString(processEnv.AEGIS_GEMINI_FALLBACK_MODEL) ?? "gemini-2.5-flash";
 
   return {
     port: mustInt("PORT", processEnv.PORT, 8787),
+
     defaultProvider,
     requireTenantHeader: envBool(processEnv.AEGIS_REQUIRE_TENANT_HEADER, true),
+    streamIncludeUsage: envBool(processEnv.AEGIS_STREAM_INCLUDE_USAGE, true),
 
     openai: {
       ...(openaiApiKey ? { apiKey: openaiApiKey } : {}),
@@ -82,11 +151,20 @@ export function loadEnv(processEnv = process.env): ProxyEnv {
     geminiAllowFallback: envBool(processEnv.AEGIS_GEMINI_ALLOW_FALLBACK, true),
     geminiFallbackModel,
 
-    // M3 toggles
-    streamIncludeUsage: envBool(processEnv.AEGIS_STREAM_INCLUDE_USAGE, true),
-    auditEnabled: envBool(processEnv.AEGIS_AUDIT_ENABLED, true),
+    governanceEnabled: envBool(processEnv.AEGIS_GOVERNANCE_ENABLED, true),
+    policies: {
+      default: defaultPolicyOverride ?? DEFAULT_POLICY,
+      tenants: tenantPolicies
+    },
 
-    auditDir: String(processEnv.AEGIS_AUDIT_DIR ?? ".aegis/receipts"),
+    defaultMaxTokens: mustInt("AEGIS_DEFAULT_MAX_TOKENS", processEnv.AEGIS_DEFAULT_MAX_TOKENS, 128),
+    maxTokensCap: mustInt("AEGIS_MAX_TOKENS_CAP", processEnv.AEGIS_MAX_TOKENS_CAP, 2048),
+
+    pricing,
+
+    receiptsDir,
+    auditDir: receiptsDir,
+
     signerKeyId: String(processEnv.AEGIS_SIGNER_KEY_ID ?? "local-k1"),
     signerSecretHex: String(processEnv.AEGIS_SIGNER_SECRET_HEX ?? "01020304")
   };

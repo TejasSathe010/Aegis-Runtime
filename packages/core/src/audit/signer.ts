@@ -4,7 +4,7 @@ import { stableStringify } from "../utils/stableStringify.js";
 
 export interface ReceiptSigner {
   keyId: string;
-  sign(payload: unknown): Promise<string>; // base64url
+  sign(payload: unknown): Promise<string>;
 }
 
 export class HmacSha256Signer implements ReceiptSigner {
@@ -18,7 +18,6 @@ export class HmacSha256Signer implements ReceiptSigner {
 
   async sign(payload: unknown): Promise<string> {
     const msg = stableStringify(payload);
-    // Node crypto for v1 (data-plane runs on Node/edge; edge variant can use WebCrypto later)
     const h = crypto.createHmac("sha256", Buffer.from(this.secret));
     h.update(msg);
     return toBase64Url(h.digest());

@@ -1,6 +1,7 @@
 {
   "name": "@aegis/adapters-openai",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "OpenAI provider adapter for Aegis Runtime with Chat Completions API support",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,12 +11,38 @@
       "default": "./dist/index.js"
     }
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "ai",
+    "llm",
+    "openai",
+    "adapter",
+    "governance",
+    "aegis"
+  ],
+  "author": "Aegis Runtime Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aegis-runtime/aegis-runtime.git",
+    "directory": "packages/adapters-openai"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
+    "@aegis/core": "workspace:*"
+  },
+  "peerDependencies": {
     "@aegis/core": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "node --test dist/**/*.test.js || true"
+    "test": "node --test dist/**/*.test.js || true",
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
     "typescript": "^5.6.3"

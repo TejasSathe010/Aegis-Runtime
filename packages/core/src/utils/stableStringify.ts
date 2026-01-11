@@ -24,6 +24,5 @@ function normalize(value: unknown): Json {
     return out;
   }
 
-  // For non-JSON types, we intentionally coerce to string for audit stability.
   return String(value);
 }

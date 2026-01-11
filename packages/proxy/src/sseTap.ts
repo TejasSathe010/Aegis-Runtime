@@ -29,12 +29,10 @@ export function tapSseStream(input: ReadableStream<Uint8Array>): StreamTapResult
       total_tokens: typeof u.total_tokens === "number" ? u.total_tokens : undefined
     };
 
-    // Store if it looks meaningful
     if (next.prompt_tokens || next.completion_tokens || next.total_tokens) usage = next;
   }
 
   function processSseText(text: string) {
-    // Normalize for parsing only; we do NOT re-emit this text.
     buffer += text.replace(/\r\n/g, "\n");
 
     while (true) {
@@ -44,7 +42,6 @@ export function tapSseStream(input: ReadableStream<Uint8Array>): StreamTapResult
       const event = buffer.slice(0, sep);
       buffer = buffer.slice(sep + 2);
 
-      // Collect data lines
       const lines = event.split("\n");
       const dataLines: string[] = [];
       for (const line of lines) {
@@ -63,14 +60,13 @@ export function tapSseStream(input: ReadableStream<Uint8Array>): StreamTapResult
         const obj = JSON.parse(payload);
         tryExtractUsage(obj);
       } catch {
-        // ignore malformed chunk; passthrough is still correct
       }
     }
   }
 
   const ts = new TransformStream<Uint8Array, Uint8Array>({
     transform(chunk, controller) {
-      controller.enqueue(chunk); // strict passthrough
+      controller.enqueue(chunk);
       processSseText(decoder.decode(chunk, { stream: true }));
     },
     flush() {

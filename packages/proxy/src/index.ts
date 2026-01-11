@@ -7,7 +7,6 @@ const env = loadEnv();
 createServer(async (nodeReq, nodeRes) => {
   const ac = new AbortController();
 
-  // Abort ONLY on real client abort or response not finishing
   nodeReq.on("aborted", () => ac.abort());
   nodeRes.on("close", () => {
     if (!nodeRes.writableEnded) ac.abort();
@@ -20,7 +19,6 @@ createServer(async (nodeReq, nodeRes) => {
 
     const hasBody = method !== "GET" && method !== "HEAD";
 
-    // NOTE: Node requires duplex:"half" when body is a stream (IncomingMessage)
     const init: any = {
       method,
       headers: nodeReq.headers as any

@@ -37,8 +37,7 @@ export interface GateCall {
     ok: boolean;
     status: number;
     providerRequestId?: string;
-    usage?: Usage;        // present for non-stream or when stream usage is available
-    // If execute throws, we capture error in receipt.
+    usage?: Usage;
   }>;
 }
 
@@ -71,7 +70,6 @@ export class Gate {
       if (!policy.model.allowModels.includes(c.model)) {
         throw new PolicyError(`Model not allowed: ${c.model}`);
       }
-      // Routing (v1): ensure provider is allowed by policy primary/fallback.
       const allowedProviders = new Set([policy.routing.primaryProvider, ...(policy.routing.fallbackProviders ?? [])]);
       if (!allowedProviders.has(c.provider as any)) {
         throw new PolicyError(`Provider not allowed: ${c.provider}`);
@@ -98,7 +96,6 @@ export class Gate {
         nowMs: now
       });
 
-      // If reservation.estimatedUsd is 0, we treat as denied (see MemoryLedger).
       if (reservation.estimatedUsd <= 0) {
         throw new BudgetExceededError({
           remainingUsd: Math.min(snapshot.remainingRunUsd, snapshot.remainingWindowUsd),
@@ -120,7 +117,6 @@ export class Gate {
         execResult = { ok: false, status: 500 };
       }
 
-      // Commit actual if usage is known; otherwise commit estimated (still safe).
       const actualUsd = execResult.usage
         ? computeActualUsd({
             pricing: this.pricing,

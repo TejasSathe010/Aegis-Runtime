@@ -43,7 +43,6 @@ export class MemoryLedger implements BudgetLedger {
     const remainingWindowUsd = Math.max(0, args.windowLimitUsd - w.spendUsd);
     const remainingRunUsd = Math.max(0, args.runLimitUsd - r.spendUsd);
 
-    // Note: reservation must fit BOTH limits (hard stop)
     if (args.estimatedUsd > remainingWindowUsd || args.estimatedUsd > remainingRunUsd) {
       const snap = snapshot(args.windowLimitUsd, args.runLimitUsd, w.spendUsd, r.spendUsd);
       return {
@@ -52,7 +51,6 @@ export class MemoryLedger implements BudgetLedger {
       };
     }
 
-    // Reserve by incrementing spend immediately (pessimistic / safe)
     w.spendUsd += args.estimatedUsd;
     r.spendUsd += args.estimatedUsd;
 
@@ -79,7 +77,6 @@ export class MemoryLedger implements BudgetLedger {
     const w = this.windows.get(wKey) ?? { spendUsd: 0 };
     const r = this.runs.get(rKey) ?? { spendUsd: 0 };
 
-    // Reconcile: we already charged estimatedUsd. Apply delta.
     const delta = args.actualUsd - reservation.estimatedUsd;
     w.spendUsd = Math.max(0, w.spendUsd + delta);
     r.spendUsd = Math.max(0, r.spendUsd + delta);
@@ -87,8 +84,6 @@ export class MemoryLedger implements BudgetLedger {
     this.windows.set(wKey, w);
     this.runs.set(rKey, r);
 
-    // We need limits to compute remaining; limits come from caller at peek time.
-    // For commit-time snapshot we return "unknown limits" as zeros, caller should call peek().
     return {
       snapshot: {
         windowSpendUsd: w.spendUsd,
@@ -119,7 +114,6 @@ export class MemoryLedger implements BudgetLedger {
   }
 
   private async _peekFromReservation(res: Reservation): Promise<LedgerSnapshot> {
-    // Limits are unknown here; this is only used to make commit idempotent.
     const wKey = kWindow(res.tenantId, res.window, res.windowStartMs);
     const rKey = kRun(res.tenantId, res.runId);
     const w = this.windows.get(wKey) ?? { spendUsd: 0 };

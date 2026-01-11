@@ -38,7 +38,6 @@ export interface BudgetLedger {
 
   commit(args: CommitArgs): Promise<{ snapshot: LedgerSnapshot }>;
 
-  // Optional: best-effort read
   peek(args: {
     tenantId: TenantId;
     runId: string;

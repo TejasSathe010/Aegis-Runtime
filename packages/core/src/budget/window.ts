@@ -14,7 +14,6 @@ export function windowStartMs(nowMs: number, w: BudgetWindow): number {
     d.setHours(0, 0, 0, 0);
     return d.getTime();
   }
-  // month
   d.setDate(1);
   d.setHours(0, 0, 0, 0);
   return d.getTime();
