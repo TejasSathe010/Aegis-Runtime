@@ -1,14 +1,19 @@
-# @aegis/adapters-openai
+# @aegis-runtime/adapters-openai
 
-OpenAI provider adapter for Aegis Runtime with Chat Completions API support, including streaming capabilities.
+[![npm version](https://img.shields.io/npm/v/@aegis-runtime/adapters-openai.svg)](https://www.npmjs.com/package/@aegis-runtime/adapters-openai)
+[![npm downloads](https://img.shields.io/npm/dm/@aegis-runtime/adapters-openai.svg)](https://www.npmjs.com/package/@aegis-runtime/adapters-openai)
+
+**📦 Published on NPM** | OpenAI provider adapter for Aegis Runtime with Chat Completions API support, including streaming capabilities.
 
 ## Installation
 
 ```bash
-npm install @aegis/adapters-openai @aegis/core
+npm install @aegis-runtime/adapters-openai @aegis-runtime/core
 # or
-pnpm add @aegis/adapters-openai @aegis/core
+pnpm add @aegis-runtime/adapters-openai @aegis-runtime/core
 ```
+
+**🔗 [View on NPM](https://www.npmjs.com/package/@aegis-runtime/adapters-openai)**
 
 ## Features
 
@@ -21,8 +26,8 @@ pnpm add @aegis/adapters-openai @aegis/core
 ## Quick Start
 
 ```typescript
-import { openaiChatCompletionsViaGate } from "@aegis/adapters-openai";
-import { Gate } from "@aegis/core";
+import { openaiChatCompletionsViaGate } from "@aegis-runtime/adapters-openai";
+import { Gate } from "@aegis-runtime/core";
 
 const response = await openaiChatCompletionsViaGate({
   gate: yourGateInstance,

@@ -1,14 +1,19 @@
-# @aegis/proxy
+# @aegis-runtime/proxy
 
-Production-ready HTTP proxy server for AI/LLM governance with OpenAI-compatible API endpoints.
+[![npm version](https://img.shields.io/npm/v/@aegis-runtime/proxy.svg)](https://www.npmjs.com/package/@aegis-runtime/proxy)
+[![npm downloads](https://img.shields.io/npm/dm/@aegis-runtime/proxy.svg)](https://www.npmjs.com/package/@aegis-runtime/proxy)
+
+**📦 Published on NPM** | Production-ready HTTP proxy server for AI/LLM governance with OpenAI-compatible API endpoints.
 
 ## Installation
 
 ```bash
-npm install @aegis/proxy @aegis/core @aegis/adapters-openai
+npm install @aegis-runtime/proxy @aegis-runtime/core @aegis-runtime/adapters-openai
 # or
-pnpm add @aegis/proxy @aegis/core @aegis/adapters-openai
+pnpm add @aegis-runtime/proxy @aegis-runtime/core @aegis-runtime/adapters-openai
 ```
+
+**🔗 [View on NPM](https://www.npmjs.com/package/@aegis-runtime/proxy)**
 
 ## Features
 

@@ -1,14 +1,19 @@
-# @aegis/core
+# @aegis-runtime/core
 
-Core runtime components for AI governance, policy enforcement, budget management, and audit logging.
+[![npm version](https://img.shields.io/npm/v/@aegis-runtime/core.svg)](https://www.npmjs.com/package/@aegis-runtime/core)
+[![npm downloads](https://img.shields.io/npm/dm/@aegis-runtime/core.svg)](https://www.npmjs.com/package/@aegis-runtime/core)
+
+**📦 Published on NPM** | Core runtime components for AI governance, policy enforcement, budget management, and audit logging.
 
 ## Installation
 
 ```bash
-npm install @aegis/core
+npm install @aegis-runtime/core
 # or
-pnpm add @aegis/core
+pnpm add @aegis-runtime/core
 ```
+
+**🔗 [View on NPM](https://www.npmjs.com/package/@aegis-runtime/core)**
 
 ## Features
 
@@ -22,7 +27,7 @@ pnpm add @aegis/core
 ## Quick Start
 
 ```typescript
-import { Gate, MemoryLedger, FileReceiptSink, HmacSha256Signer } from "@aegis/core";
+import { Gate, MemoryLedger, FileReceiptSink, HmacSha256Signer } from "@aegis-runtime/core";
 import crypto from "crypto";
 
 // Create a policy provider

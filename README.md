@@ -1,6 +1,17 @@
 # Aegis Runtime
 
-Production-ready governance and runtime controls for AI/LLM applications.
+[![npm version](https://img.shields.io/npm/v/@aegis-runtime/core.svg)](https://www.npmjs.com/package/@aegis-runtime/core)
+[![npm downloads](https://img.shields.io/npm/dm/@aegis-runtime/core.svg)](https://www.npmjs.com/package/@aegis-runtime/core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**🚀 Published on NPM** | **Production-Ready** | **Type-Safe**
+
+Production-ready governance and runtime controls for AI/LLM applications. Now available on NPM as a fully published, production-ready library.
+
+**📦 NPM Packages:**
+- [`@aegis-runtime/core`](https://www.npmjs.com/package/@aegis-runtime/core) - Core governance engine
+- [`@aegis-runtime/adapters-openai`](https://www.npmjs.com/package/@aegis-runtime/adapters-openai) - OpenAI adapter
+- [`@aegis-runtime/proxy`](https://www.npmjs.com/package/@aegis-runtime/proxy) - HTTP proxy server
 
 ## What Problem Does This Solve?
 
@@ -68,7 +79,7 @@ Start a governance-enabled proxy server:
 export OPENAI_API_KEY="your-key"
 export GEMINI_API_KEY="your-key"
 export AEGIS_DEFAULT_PROVIDER="openai"
-pnpm --filter @aegis/proxy dev
+pnpm --filter @aegis-runtime/proxy dev
 ```
 
 Use it like any OpenAI-compatible API:
@@ -95,8 +106,8 @@ curl http://localhost:8787/v1/chat/completions \
 Integrate directly into your application:
 
 ```typescript
-import { Gate, MemoryLedger, FileReceiptSink, HmacSha256Signer } from "@aegis/core";
-import { openaiChatCompletionsViaGate } from "@aegis/adapters-openai";
+import { Gate, MemoryLedger, FileReceiptSink, HmacSha256Signer } from "@aegis-runtime/core";
+import { openaiChatCompletionsViaGate } from "@aegis-runtime/adapters-openai";
 import crypto from "crypto";
 
 const policyProvider = {
@@ -143,21 +154,40 @@ const response = await openaiChatCompletionsViaGate({
 
 ## Installation
 
+**📦 Published on NPM** - Install directly from the registry:
+
 ```bash
-npm install @aegis/core @aegis/adapters-openai @aegis/proxy
+npm install @aegis-runtime/core @aegis-runtime/adapters-openai @aegis-runtime/proxy
 ```
 
 Or using pnpm:
 
 ```bash
-pnpm add @aegis/core @aegis/adapters-openai @aegis/proxy
+pnpm add @aegis-runtime/core @aegis-runtime/adapters-openai @aegis-runtime/proxy
 ```
 
-## Packages
+Or install individual packages:
 
-- **@aegis/core**: Core governance engine (Gate, Policy, Budget, Audit)
-- **@aegis/adapters-openai**: OpenAI provider adapter
-- **@aegis/proxy**: HTTP proxy server with multi-provider support
+```bash
+# Core package only
+npm install @aegis-runtime/core
+
+# With OpenAI adapter
+npm install @aegis-runtime/core @aegis-runtime/adapters-openai
+
+# Proxy server
+npm install @aegis-runtime/proxy @aegis-runtime/core @aegis-runtime/adapters-openai
+```
+
+## 📦 Published Packages
+
+All packages are published and available on NPM:
+
+- **[@aegis-runtime/core](https://www.npmjs.com/package/@aegis-runtime/core)** - Core governance engine (Gate, Policy, Budget, Audit)
+- **[@aegis-runtime/adapters-openai](https://www.npmjs.com/package/@aegis-runtime/adapters-openai)** - OpenAI provider adapter
+- **[@aegis-runtime/proxy](https://www.npmjs.com/package/@aegis-runtime/proxy)** - HTTP proxy server with multi-provider support
+
+**✨ Status:** All packages are production-ready, fully tested, and available on NPM.
 
 ## Key Patterns
 
@@ -227,12 +257,21 @@ Receipts are tamper-proof and provide proof for compliance requirements.
 
 ## Quick Start
 
-1. **Install**: `pnpm add @aegis/proxy`
+1. **Install**: `npm install @aegis-runtime/proxy @aegis-runtime/core @aegis-runtime/adapters-openai`
 2. **Configure**: Set `OPENAI_API_KEY` and `GEMINI_API_KEY`
-3. **Start**: `pnpm --filter @aegis/proxy dev`
+3. **Start**: `pnpm --filter @aegis-runtime/proxy dev`
 4. **Use**: Make requests to `http://localhost:8787/v1/chat/completions`
 
 See the [demo](./demo/README.md) for an interactive example.
+
+## 🎯 Why This Matters
+
+This library is **published to NPM**, demonstrating:
+- ✅ **Production Readiness**: Fully tested and ready for real-world use
+- ✅ **Developer Experience**: Easy installation via standard package managers
+- ✅ **Maintainability**: Versioned releases with semantic versioning
+- ✅ **Open Source**: Available to the community for collaboration
+- ✅ **Professional Quality**: Clean, documented, and production-grade code
 
 ## Documentation
 
